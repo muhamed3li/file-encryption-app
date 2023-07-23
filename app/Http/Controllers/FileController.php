@@ -26,8 +26,8 @@ class FileController extends Controller
         $fileName = $file->getClientOriginalName();
         $fileSize = $file->getSize();
         $fileExtension = $file->getClientOriginalExtension();
-        
-        return view('index', compact('fileName', 'fileSize', 'fileExtension'));
+
+        return view('index', compact('fileName', 'fileSize', 'fileExtension', 'fileNameHashed'));
     }
 
     public function encrypt(Request $request)
