@@ -15,12 +15,9 @@ use App\Http\Controllers\FileController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::controller(FileController::class)->group(function () {
+    Route::get('/', 'index')->name('home');
+    Route::post('/upload', 'upload')->name('upload');
+    Route::post('/encrypt', 'encrypt')->name('encrypt');
+    Route::post('/decrypt', 'decrypt')->name('decrypt');
 });
-
-
-Route::get('/', [FileController::class, 'index'])->name('home');
-Route::post('/upload', [FileController::class, 'upload'])->name('upload');
-Route::post('/encrypt', [FileController::class, 'encrypt'])->name('encrypt');
-Route::post('/decrypt', [FileController::class, 'decrypt'])->name('decrypt');

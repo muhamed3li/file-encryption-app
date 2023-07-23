@@ -26,13 +26,8 @@ class FileController extends Controller
         $fileName = $file->getClientOriginalName();
         $fileSize = $file->getSize();
         $fileExtension = $file->getClientOriginalExtension();
-
-        return view('index')->with([
-            'fileName' => $fileName,
-            'fileSize' => $fileSize,
-            'fileExtension' => $fileExtension,
-            'fileNameHashed' => $fileNameHashed
-        ]);
+        
+        return view('index', compact('fileName', 'fileSize', 'fileExtension'));
     }
 
     public function encrypt(Request $request)
@@ -46,7 +41,7 @@ class FileController extends Controller
         }
 
         // encrypted file content
-        $encrypted = $this->encryptFile("uploads/encrypted/$file");
+        $encrypted = encryptFile("uploads/encrypted/$file");
 
         //download file after encrypted
         return response()->streamDownload(function () use ($encrypted) {
@@ -65,66 +60,11 @@ class FileController extends Controller
         }
 
         // decrypted file
-        $decryption = $this->decryptFile("uploads/encrypted/$file");
+        $decryption = decryptFile("uploads/encrypted/$file");
 
         //download file after decrypted
         return response()->streamDownload(function () use ($decryption) {
             echo $decryption;
         }, $file);
-    }
-
-    private function encryptFile($path)
-    {
-        // cipher method
-        $method = 'AES-256-CBC';
-        $options = 0;
-
-        // Random Vector for encryption
-        $iv = openssl_random_pseudo_bytes(16);
-
-        // encryption key
-        $key = openssl_random_pseudo_bytes(32);
-
-        //function to encrypt the data
-        $encryption =  openssl_encrypt(
-            file_get_contents(url($path)),
-            $method,
-            $key,
-            $options,
-            $iv
-        );
-
-        return $encryption;
-    }
-    private function decryptFile($path)
-    {
-
-        // cipher method
-        $method = 'AES-256-CBC';
-        $options = 0;
-
-        // Random Vector for encryption
-        $iv = openssl_random_pseudo_bytes(16);
-
-        // encryption key
-        $key = openssl_random_pseudo_bytes(32);
-
-        //function to encrypt the data
-        $encryption = openssl_encrypt(
-            file_get_contents(url($path)),
-            $method,
-            $key,
-            $options,
-            $iv
-        );
-
-        //function to decrypt the data
-        return openssl_decrypt(
-            $encryption,
-            $method,
-            $key,
-            $options,
-            $iv
-        );
     }
 }

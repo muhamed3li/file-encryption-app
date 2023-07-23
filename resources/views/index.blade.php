@@ -14,10 +14,18 @@
                 <h4 class="card-title">File Encryption App</h4>
                 <form action="{{ route('upload') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <div class="form-group d-flex">
-                        <input type="file" class="form-control w-75" name="file" required>
-                        <button type="submit" class="btn btn-primary form-control w-25">Upload File</button>
+                    <div class="form-group">
+                        <input type="file"
+                            class="form-control w-50 m-auto {{ $errors->has('file') ? ' is-invalid' : '' }}"
+                            name="file" required>
+                        @if ($errors->has('file'))
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $errors->first('file') }}</strong>
+                            </span>
+                        @endif
                     </div>
+                    <button style="width: 10rem;" type="submit" class="mt-3 btn btn-primary form-control">Upload
+                        File</button>
                 </form>
 
                 @isset($fileName)
@@ -42,11 +50,12 @@
                             <button type="submit" class="btn btn-danger">Decrypt</button>
                         </form>
                     </div>
+                    @if (session('error'))
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ session('error') }}</strong>
+                        </span>
+                    @endif
                 @endisset
-
-                @if (session('success'))
-                    <p>{{ session('success') }}</p>
-                @endif
             </div>
         </div>
 
